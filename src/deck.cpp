@@ -74,7 +74,7 @@ void Deck::playerTurn() { //Turn of player
     cout << "Your current hand is " << "\n";
     printHand();
     while (!card_played) {
-        cout << "Enter the name of the card you wish to play or enter 'draw' to draw a card or 'end turn' if you've already drawn:" << endl;
+        cout << "Enter the name of the card you wish to play or enter 'draw' to draw a card or 'end' to end turn if you've already drawn:\n";
         getline(cin, card);
         cout << endl;
         if (card.compare("draw") == 0 && !card_drawed) {
@@ -85,11 +85,11 @@ void Deck::playerTurn() { //Turn of player
             printHand();
             card_drawed = true;
         }
-        else if (card.compare("end turn") == 0 && card_drawed) {
+        else if (card.compare("end") == 0 && card_drawed) {
             cout << "You have chosen to skip your turn.\n";
             card_played = true;
         }
-        else if (count(pHand[0].begin(),pHand[0].end(),card)){
+        else if (!card_played && count(pHand[0].begin(),pHand[0].end(),card)){
             if (playCard(card)) {
                 card_played = true;
             }
@@ -222,7 +222,10 @@ int main () { //Command Line version of game using stdIn and stdOut
         else gamer.botTurn();
         cout << endl;
         gamer.winner = gamer.checkWin();
-        if (gamer.winner != -1) cout << "\nPlayer " << gamer.winner << " has won the game of UNO, congraluations!\n";
+        if (gamer.winner != -1) {
+            cout << "\nPlayer " << gamer.winner << " has won the game of UNO, congraluations!\n";
+            break;
+        }
         gamer.incrementTurn();
     }
 }
