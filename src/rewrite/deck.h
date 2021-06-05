@@ -7,7 +7,7 @@
 #include "Card.h"
 using namespace std;
 
-class Deck {
+class Deck { //Back of deck is the top card
     public:
         Deck() {
             srand(time (0));
@@ -17,8 +17,10 @@ class Deck {
         friend ostream& operator<<(ostream& stream, const Deck& d);
         void resetDeck();
         void shuffleDeck();
-    private:
+        vector<Card> drawCards(int num_draws);
         vector<Card> deck;
+    private:
+        Card drawCard();
 };
 
 ostream& operator<<(ostream& stream, const Deck& d) {
@@ -42,3 +44,16 @@ void Deck::resetDeck() {
 void Deck::shuffleDeck() {
     random_shuffle(deck.begin(), deck.end()); 
 };
+
+vector<Card> Deck::drawCards(int num_draws) {
+    vector<Card> draws;
+    for (int i = 0; i < num_draws; i++) {
+        draws.push_back(drawCard());
+    };
+};
+
+Card Deck::drawCard() {
+    const auto card = deck.back();
+    deck.pop_back();
+    return card;
+}   
