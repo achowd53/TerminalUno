@@ -1,14 +1,17 @@
+#ifndef CARD
+#define CARD
+
 #include <string>
 using namespace std;
 
 class Card {
     public:
-        Card(string card) {
+        Card(string card = "Blank Card") {
             card_name = card;
             string card_parts[2] = {card.substr(0, card.find(" ")), card.substr(card.find(" ")+1, card.size())};
             card_color = card_parts[0];
             card_number = card_parts[1];
-        }
+        };
         friend ostream& operator<<(ostream& stream, const Card& card);
         string getColor();
         string getNumber();
@@ -66,3 +69,5 @@ bool Card::stringsEqual(string a, string b) {
 string Card::getWildColor() {
     return wild_color;
 };
+
+#endif

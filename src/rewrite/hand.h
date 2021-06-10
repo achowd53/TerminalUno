@@ -1,6 +1,8 @@
+#ifndef HAND
+#define HAND
+
 #include <iostream>
 #include <vector>
-#include <string>
 #include "card.h"
 using namespace std;
 
@@ -8,11 +10,12 @@ class Hand {
     public:
         Hand(string name = "") {
             player_name = name;
+            resetHand();
         };
         friend ostream& operator<<(ostream& stream, const Hand& hand);
         string displayHand();
-        void addCard(Card added_card);
         Card playCard(Card card_to_play);
+        void addCard(Card added_card);
         void resetHand();
     private:
         string player_name;
@@ -22,8 +25,8 @@ class Hand {
 };
 
 ostream& operator<<(ostream& stream, const Hand& hand) {
-    string text = "Content of Hand of Player " + hand.player_name + ":\n";
-    for (Card i: hand.player_hand) {
+    string text = "Content of Hand of Player " + hand.player_name + ":\n  ";
+    for (auto i: hand.player_hand) {
         text += i.getCard() + ", ";
     };
     if (hand.cards_left) {
@@ -31,14 +34,14 @@ ostream& operator<<(ostream& stream, const Hand& hand) {
     };
     stream << text;
     return stream;
-}
+};
 
 string Hand::displayHand() {
     string text = "";
     if (cards_left == 0) {
         return text;
     };
-    for (Card i: player_hand) {
+    for (auto i: player_hand) {
         text += i.getCard() + ", ";
     };
     text = text.substr(0, text.size() - 2) + "\n";
@@ -58,7 +61,7 @@ Card Hand::playCard(Card card_to_play) {
 };
 
 void Hand::resetHand() {
-    player_hand = {};
+    player_hand.clear();
     cards_left = 0;
 };
 
@@ -69,4 +72,7 @@ vector<Card>::iterator Hand::findCard(Card card_to_find) {
             return itr;
         };
     };
+    return player_hand.end()+1;
 };
+
+#endif

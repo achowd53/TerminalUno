@@ -1,8 +1,9 @@
-#include <vector>
-#include "card.h"
+#ifndef POOL
+#define POOL
+
 #include "deck.h"
 
-class CardPool {
+class CardPool { //Top of Pile is at back
     public:
         friend ostream& operator<<(ostream& stream, const CardPool& pool);
         Card getTopCard();
@@ -13,7 +14,7 @@ class CardPool {
 };
 
 ostream& operator<<(ostream& stream, const CardPool& pool) {
-    stream << pool.played_cards.at(0);
+    stream << pool.played_cards.back();
     return stream;
 };
 
@@ -30,3 +31,5 @@ void CardPool::emptyCards(Deck d) {
     played_cards = {played_cards.back()};
     d.shuffleDeck();
 };
+
+#endif
