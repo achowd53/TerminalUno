@@ -19,12 +19,12 @@ class Card {
         void setWildColor(string color);
         bool validPlay(Card top_card);
         Card clone();
+        static bool stringsEqual(string a, string b);
     private:
         string card_name;
         string card_color;
         string card_number;
         string wild_color; // Only applicable if its a wild card
-        bool stringsEqual(string a, string b);
         string getWildColor();
 };
 
