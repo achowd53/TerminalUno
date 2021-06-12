@@ -340,7 +340,6 @@ void Terminal::incrementTurn() {
 
 void Terminal::checkDeck() {
     if (deck.num_cards <= 20) {
-        cout << "Wow this might be an error.";
         pool.emptyCards();
     };
 };
@@ -357,7 +356,7 @@ int main() {
     cout << game.getPlayer(game.checkWin());
     return -1;  
 }
-
-//Implement UNO
-
-//std::bad_alloc somwhere
+//Things left to do in this class:
+//  Implement calling UNO
+//  Setup a way to detect if ANSI escape codes usable
+//  std::bad_alloc error 
