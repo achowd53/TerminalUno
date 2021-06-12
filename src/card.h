@@ -13,25 +13,37 @@ class Card {
             card_number = card_parts[1];
         };
         friend ostream& operator<<(ostream& stream, const Card& card);
+        string getCardString();
         string getColor();
         string getNumber();
         string getCard();
         void setWildColor(string color);
         bool validPlay(Card top_card);
-        Card clone();
         static bool stringsEqual(string a, string b);
     private:
         string card_name;
         string card_color;
         string card_number;
-        string wild_color; // Only applicable if its a wild card
+        string wild_color = "Wild"; // Only applicable if its a wild card
         string getWildColor();
 };
 
 ostream& operator<<(ostream & stream, const Card& card) {
+    if (!Card::stringsEqual(card.wild_color, "Wild")) {
+        stream << card.wild_color << " ";
+    };
     stream << card.card_name;
     return stream;
-}
+};
+
+string Card::getCardString() {
+    string text;
+    if (!Card::stringsEqual(wild_color, "Wild")) {
+        text += wild_color + " ";
+    };
+    text += card_name;
+    return text;
+};
 
 string Card::getCard() {
     return card_name;
@@ -53,13 +65,9 @@ void Card::setWildColor(string color) {
 };
 
 bool Card::validPlay(Card top_card) {
-    return (stringsEqual(getColor(), "Wild") || 
+    return (stringsEqual(card_color, "Wild") || 
             stringsEqual(top_card.getColor(), getColor()) || 
             stringsEqual(top_card.getNumber(), getNumber()));
-};
-
-Card Card::clone() {
-    return Card(card_name);
 };
 
 bool Card::stringsEqual(string a, string b) {
