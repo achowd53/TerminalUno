@@ -278,6 +278,7 @@ void Terminal::specialCardRules(int num_actions) {
         vector<Hand> hands = {players[turn].getHand(), players[swap_with].getHand()};
         players[turn].setNewHand(&hands[1]);
         players[swap_with].setNewHand(&hands[0]);
+        cout << color(players[turn].getPlayerName() + " has chosen to swap hands with " + players[swap_with].getPlayerName() + "\n");
     };
     if (zero_rotate && Card::stringsEqual(top_card.getNumber(), "0")) {
         vector<Hand> hands;
