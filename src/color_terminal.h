@@ -10,15 +10,18 @@ class Color { //Terminal Coloring implemented with ANSI codes
         Color() {
             initColors();
         };
-        string colorTerminal(string color, int color_index);
+        string colorTerminal(string color_this, int color_index, bool use_color);
     private:
         void initColors();
         vector<string> escape_colors;
         string reset_color = "\033[0m";
 };
 
-string Color::colorTerminal(string color, int color_index) {
-    return escape_colors[color_index] + color + reset_color;
+string Color::colorTerminal(string color_this, int color_index, bool use_color) {
+    if (!use_color) {
+        return color_this; 
+    }
+    return escape_colors[color_index] + color_this + reset_color;
 };
 
 void Color::initColors() {

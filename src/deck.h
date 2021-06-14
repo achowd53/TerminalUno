@@ -20,6 +20,7 @@ class Deck { //Back of deck is the top card
         void shuffleDeck();
         vector<Card> drawCards(int num_draws);
         Card drawCard();
+        Card startingCard();
         vector<Card> deck;
         int num_cards;
 };
@@ -62,6 +63,13 @@ Card Deck::drawCard() {
     deck.pop_back();
     num_cards -= 1;
     return card;
+};
+
+Card Deck::startingCard() {
+    while (Card::stringsEqual(deck.back().getColor(), "Wild")) {
+        shuffleDeck();
+    };
+    return drawCard();
 };
 
 #endif

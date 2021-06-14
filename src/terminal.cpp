@@ -27,12 +27,13 @@ class Terminal {
         int stacked_draws_type = -1; //0 is +2s and 1 is +4s
         int num_players;
         int turn;
-        //Custom Rules
+        bool skip_turn = false;
+        bool reversed_order = false;
+        //Custom Settings
         bool stacking = false;
         bool seven_swap = false;
         bool zero_rotate = false;
-        bool skip_turn = false;
-        bool reversed_order = false;
+        bool use_color = false;
 };
 
 int Terminal::checkWin() { //Return -1 if no one's won yet or return index of player that has won
@@ -49,13 +50,22 @@ Player Terminal::getPlayer(int n) {
 };
 
 void Terminal::initGame() {
+    string answer = "blank";
+    cout << ansi.colorTerminal("Is this text in color? (Answer 'yes' or 'no')", 9, true);
+    while (getline(cin, answer) && !Card::stringsEqual(answer, "yes") && !Card::stringsEqual(answer, "no")) {};
+    if (Card::stringsEqual(answer, "yes")) {
+        use_color = true;
+    };
+    if (Card::stringsEqual(answer, "yes")) {
+        stacking = true;
+    };
     createPlayers();
     turn = rand() % num_players;
     //Each player draws 7 to start off the game
     for (int i = 0; i < num_players; i++) {
         players[i].drawCards(7);
     };
-    string answer = "blank";
+    answer = "blank";
     cout << "Enter either 'yes' or 'no' to determine whether the following custom rules should be enabled.\n";
     cout << "Enable stacking rule? ";
     while (getline(cin, answer) && !Card::stringsEqual(answer, "yes") && !Card::stringsEqual(answer, "no")) {};
@@ -131,6 +141,7 @@ void Terminal::playerTurn() {
     cout << color("Top Card: " + top_card.getCardString() + "\n\n");
     //If self player, print out hand and ask to select card
     Card placed_card;
+    bool uno_called = false;
     int actions_made = 0;
     if ((*current_player).getPlayerType() == 0) {
         bool valid_play = false;
@@ -146,8 +157,11 @@ void Terminal::playerTurn() {
                     string card_name = player_hand.at(i).getCard();
                     help_text += "Enter '" + to_string(i) + "' or '" + card_name + "' to play the " + card_name + " card.\n";
                 };
-                help_text += "\nEnter 'draw' to draw a card from the deck.\nEnter 'top' to be reminded of the top card on the pile.\n\n";
-                cout << ansi.colorTerminal(help_text, 9) << endl;
+                help_text += "\nEnter 'draw' to draw a card from the deck.\n";
+                help_text += "Enter 'top' to be reminded of the top card on the pile.\n";
+                help_text += "Enter 'cards' to be reminded of how many cards left each player has.\n";
+                help_text += "Enter 'uno' if you are going to have 1 card at the end of your turn or draw 4.\n\n";
+                cout << ansi.colorTerminal(help_text, 9, use_color) << endl;
                 continue;
             };
             if (Card::stringsEqual(card, "draw")) {
@@ -158,6 +172,20 @@ void Terminal::playerTurn() {
             };
             if (Card::stringsEqual(card, "top")) {
                 cout << color("Top Card: " + top_card.getCardString() + "\n") << endl;
+                continue;
+            };
+            if (Card::stringsEqual(card, "cards")) {
+                string help_text = "Number of Cards Each Player Has Left: \n";
+                for (int i = 0; i < num_players; i++) {
+                    help_text += "  " + to_string(i) + ". " + players[i].getPlayerName() + " - " + to_string(players[i].cardsLeft()) + " cards left\n";
+                };
+                help_text += "\n";
+                cout << ansi.colorTerminal(help_text, 8, use_color);
+                continue;
+            };
+            if (Card::stringsEqual(card, "uno")) {
+                uno_called = true;
+                cout << color((*current_player).getPlayerName() + " has called UNO.\n");
                 continue;
             };
             try {
@@ -171,7 +199,7 @@ void Terminal::playerTurn() {
                 }
                 else {
                     //Otherwise throw error and retry
-                    cout << color("Invalid Card Number. Please select a number from 0 to " + to_string((*current_player).cardsLeft()-1)) << "\n";
+                    cout << color("Invalid Move. Please reenter a valid move or enter 'help' to get a list of valid moves.\n");
                     continue;
                 };
             }
@@ -185,7 +213,7 @@ void Terminal::playerTurn() {
                 }
                 else {
                     //Otherwise throw error and retry
-                    cout << color("Invalid Card Name. Please enter a card name within your hand.\n");
+                    cout << color("Invalid Move. Please reenter a valid move or enter 'help' to get a list of valid moves.\n");
                     continue;
                 };
             };
@@ -207,6 +235,21 @@ void Terminal::playerTurn() {
     cout << color((*current_player).getPlayerName() + " has placed a " + placed_card.getCardString()) << endl;
     //Special function for placed card depending on card
     specialCardRules(actions_made);
+    //Check if player has called UNO or failed to call it
+    if ((*current_player).getPlayerType() == 0) {
+        if ((*current_player).cardsLeft() == 1) {
+            if (!uno_called) {
+                cout << color((*current_player).getPlayerName() + " has failed to call UNO with 1 card remaining.\n");
+                (*current_player).drawCards(4);
+            };
+        }
+        else if ((*current_player).cardsLeft() > 1) {
+            if (uno_called) {
+                cout << color((*current_player).getPlayerName() + " has miscalled UNO with more than 1 card remaining.\n");
+                (*current_player).drawCards(4);
+            };
+        };
+    };
     //Print out number of cards in that players hand and transition turn
     cout << color((*current_player).getPlayerName() + " has " + to_string((*current_player).cardsLeft()) + " cards remaining.\n\n");
     incrementTurn();
@@ -346,7 +389,7 @@ void Terminal::checkDeck() {
 };
 
 string Terminal::color(string str) {
-    return ansi.colorTerminal(str, turn);
+    return ansi.colorTerminal(str, turn, use_color);
 };
 
 int main() {
@@ -358,6 +401,4 @@ int main() {
     return -1;  
 }
 //Things left to do in this class:
-//  Implement calling UNO
-//  Setup a way to detect if ANSI escape codes usable
 //  std::bad_alloc error 

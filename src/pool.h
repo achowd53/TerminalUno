@@ -8,7 +8,7 @@ class CardPool { //Top of Pile is at back
         friend ostream& operator<<(ostream& stream, const CardPool& pool);
         CardPool(Deck* d) {
             deck = d;
-            played_cards = {(*d).drawCard()};
+            played_cards = {(*d).startingCard()};
         };
         Card* getTopCard();
         vector<Card> getTopCards(); //Returns Top 2 Cards (in order of top card, second from top)
