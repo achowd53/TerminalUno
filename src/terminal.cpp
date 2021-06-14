@@ -1,4 +1,6 @@
 #include <random>
+#include <chrono>
+#include <thread>
 #include "player.h"
 #include "color_terminal.h"
 
@@ -253,6 +255,7 @@ void Terminal::playerTurn() {
     //Print out number of cards in that players hand and transition turn
     cout << color((*current_player).getPlayerName() + " has " + to_string((*current_player).cardsLeft()) + " cards remaining.\n\n");
     incrementTurn();
+    this_thread::sleep_for(chrono::milliseconds(2000));
 };
 
 bool Terminal::wildColorValid(string color) {
@@ -383,7 +386,7 @@ void Terminal::incrementTurn() {
 };
 
 void Terminal::checkDeck() {
-    if (deck.num_cards <= 20) {
+    if (deck.num_cards <= 32) {
         pool.emptyCards();
     };
 };
