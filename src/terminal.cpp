@@ -1,6 +1,7 @@
 #include <random>
 #include <chrono>
 #include <thread>
+#include <stdlib.h>
 #include "player.h"
 #include "color_terminal.h"
 
@@ -53,7 +54,7 @@ Player Terminal::getPlayer(int n) {
 
 void Terminal::initGame() {
     string answer = "blank";
-    cout << ansi.colorTerminal("Is this text in color? (Answer 'yes' or 'no')", 9, true);
+    cout << ansi.colorTerminal("Is this text in color (Answer 'yes' or 'no')? ", 9, true);
     while (getline(cin, answer) && !Card::stringsEqual(answer, "yes") && !Card::stringsEqual(answer, "no")) {};
     if (Card::stringsEqual(answer, "yes")) {
         use_color = true;
@@ -163,10 +164,12 @@ void Terminal::playerTurn() {
                 help_text += "Enter 'top' to be reminded of the top card on the pile.\n";
                 help_text += "Enter 'cards' to be reminded of how many cards left each player has.\n";
                 help_text += "Enter 'uno' if you are going to have 1 card at the end of your turn or draw 4.\n\n";
+                help_text += "Enter 'quit' to close the game.\n\n";
                 cout << ansi.colorTerminal(help_text, 9, use_color) << endl;
                 continue;
             };
             if (Card::stringsEqual(card, "draw")) {
+                // Add limit to drawing when you have a valid card to play
                 cout << color((*current_player).getPlayerName() + " has drawn a card") << endl;
                 (*current_player).drawCard();
                 actions_made += 1;
@@ -189,6 +192,9 @@ void Terminal::playerTurn() {
                 uno_called = true;
                 cout << color((*current_player).getPlayerName() + " has called UNO.\n");
                 continue;
+            };
+            if (Card::stringsEqual(card, "quit")) {
+                exit(0);
             };
             try {
                 int x = stoi(card);
@@ -402,6 +408,4 @@ int main() {
     };
     cout << game.getPlayer(game.checkWin());
     return -1;  
-}
-//Things left to do in this class:
-//  std::bad_alloc error 
+};

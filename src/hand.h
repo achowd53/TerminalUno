@@ -13,7 +13,6 @@ class Hand { //Hand is indexed from 0
     public:
         Hand(string name = "") {
             srand(time (0));
-            player_name = name;
             resetHand();
         };
         friend ostream& operator<<(ostream& stream, const Hand& hand);
@@ -29,7 +28,6 @@ class Hand { //Hand is indexed from 0
         void shuffleHand();
         int numCards();
     private:
-        string player_name;
         vector<Card> player_hand;
         int cards_left = 0;
         vector<Card>::iterator findCard(Card* card_to_find);
@@ -37,7 +35,7 @@ class Hand { //Hand is indexed from 0
 };
 
 ostream& operator<<(ostream& stream, const Hand& hand) {
-    string text = "Content of Hand of Player " + hand.player_name + ":\n  ";
+    string text = "Content of Hand of Player:\n  ";
     for (auto i: hand.player_hand) {
         text += i.getCard() + ", ";
     };
@@ -49,7 +47,7 @@ ostream& operator<<(ostream& stream, const Hand& hand) {
 };
 
 string Hand::getHandString() {
-    string text = "Content of Hand of Player " + player_name + ":\n  ";
+    string text = "Content of Hand of Player:\n  ";
     for (auto i: player_hand) {
         text += i.getCard() + ", ";
     };
