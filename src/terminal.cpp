@@ -371,8 +371,7 @@ void Terminal::specialCardRules(int num_actions) {
             (*(pool.getTopCard())).setWildColor(col);
         }
         else {
-            vector<string> colors = {"Red", "Yellow", "Blue", "Green"};
-            string col = colors[rand()%4];
+            string col = (*player).highestColor();
             cout << color((*player).getPlayerName() + " has selected the color " + col + "\n");
             (*(pool.getTopCard())).setWildColor(col);
         };

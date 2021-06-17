@@ -6,6 +6,7 @@
 #include <chrono>
 #include <algorithm>
 #include <vector>
+#include <map>
 #include "card.h"
 using namespace std;
 
@@ -22,6 +23,7 @@ class Hand { //Hand is indexed from 0
         Card* playCard(Card* card_to_play);
         void addCards(vector<Card> added_cards);
         void addCard(Card added_card);
+        string highestColor();
         Card* at(int n);
         Card* findCardByName(string card_name);
         void resetHand();
@@ -82,6 +84,20 @@ void Hand::addCards(vector<Card> added_cards) {
 void Hand::addCard(Card added_card) {
     player_hand.push_back(added_card);
     cards_left += 1;
+};
+
+string Hand::highestColor() {
+    int count_colors[] = {0, 0, 0, 0};
+    string index_to_colors[] = {"Red", "Yellow", "Blue", "Green"};
+    map<string, int> colors_to_index = {{"Red", 0}, {"Yellow", 1}, {"Blue", 2}, {"Green", 3}};
+    for (int i = 0; i < player_hand.size(); i++) {
+        string color = player_hand[i].getColor();
+        if (Card::stringsEqual(color, "Red") || Card::stringsEqual(color, "Yellow") || 
+            Card::stringsEqual(color, "Blue") || Card::stringsEqual(color, "Green")) {
+            count_colors[colors_to_index[color]] += 1;
+        };
+    };
+    return index_to_colors[distance(count_colors,std::max_element(count_colors, count_colors + 4))];
 };
 
 Card* Hand::playCard(Card* card_to_play) {

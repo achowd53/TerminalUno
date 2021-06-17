@@ -38,6 +38,7 @@ class Player {
         bool validatePlay(Card* card, Card top_card);
         bool validatePlay(int n, Card top_card);
         bool validatePlay(string str, Card top_card);
+        string highestColor();
         Card* getCardFromString(string str);
         Card* getCardFromInteger(int n);
         Hand getHand();
@@ -136,6 +137,10 @@ bool Player::validatePlay(string str, Card top_card) {
         return false;
     };
     return validatePlay(card, top_card);
+};
+
+string Player::highestColor() {
+    return hand.highestColor();
 };
 
 Card* Player::getCardFromString(string str) {
