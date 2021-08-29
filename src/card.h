@@ -12,20 +12,20 @@ class Card {
             card_color = card_parts[0];
             card_number = card_parts[1];
         };
-        friend ostream& operator<<(ostream& stream, const Card& card);
-        string getCardString();
-        string getColor();
-        string getNumber();
-        string getCard();
-        void setWildColor(string color);
-        bool validPlay(Card top_card);
-        static bool stringsEqual(string a, string b);
+        friend ostream& operator<<(ostream& stream, const Card& card); //Return card_name as output to stream
+        string getCardString(); //Return card_name as string (with consideration for wild_color)
+        string getColor(); //Return getWildColor() if card_color is Wild, else return card_color
+        string getNumber(); //Return card_number
+        string getCard(); //Return card_name as string (without consideration for wild_color)
+        void setWildColor(string color); //Set wild_color
+        bool validPlay(Card top_card); //Check if placing this card on top of top_card is valid
+        static bool stringsEqual(string a, string b); //Check if two strings are equivalent
     private:
         string card_name;
         string card_color;
         string card_number;
         string wild_color = "Wild"; // Only applicable if its a wild card
-        string getWildColor();
+        string getWildColor(); //Return wild_color
 };
 
 ostream& operator<<(ostream & stream, const Card& card) {

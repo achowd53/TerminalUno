@@ -16,24 +16,23 @@ class Hand { //Hand is indexed from 0
             srand(time (0));
             resetHand();
         };
-        friend ostream& operator<<(ostream& stream, const Hand& hand);
-        string getHandString();
-        string displayHand();
-        vector<Card> getCards();
-        Card* playCard(Card* card_to_play);
-        void addCards(vector<Card> added_cards);
-        void addCard(Card added_card);
-        string highestColor();
-        Card* at(int n);
-        Card* findCardByName(string card_name);
-        void resetHand();
-        void shuffleHand();
-        int numCards();
+        friend ostream& operator<<(ostream& stream, const Hand& hand); //Get Content of player_hand as stream output
+        string displayHand(); //Get Content of player_hand as a String 
+        vector<Card> getCards(); //Get Content of player_hand as a Vector of Cards
+        Card* playCard(Card* card_to_play); //Remove Card from player_hand and return it
+        void addCards(vector<Card> added_cards); //Add Cards to player_hand from Vector of Cards
+        void addCard(Card added_card); //Add Card to player_hand
+        string highestColor(); //Return Color with highest number of cards in player_hand from Red, Yellow, Blue, Green
+        Card* at(int n); //Return Card at index n in player_hand
+        Card* findCardByName(string card_name); //Find and return card in player_hand by its card_name or throw error
+        void resetHand(); //Clear player_hand
+        void shuffleHand(); //Shuffle order of Cards in player_hand
+        int numCards(); //Return cards_left
     private:
         vector<Card> player_hand;
         int cards_left = 0;
-        vector<Card>::iterator findCard(Card* card_to_find);
-        Card selected_card;
+        vector<Card>::iterator findCard(Card* card_to_find); //Find iterator location of card in hand
+        Card selected_card; //Selected card to play
 };
 
 ostream& operator<<(ostream& stream, const Hand& hand) {
@@ -46,17 +45,6 @@ ostream& operator<<(ostream& stream, const Hand& hand) {
     };
     stream << text;
     return stream;
-};
-
-string Hand::getHandString() {
-    string text = "Content of Hand of Player:\n  ";
-    for (auto i: player_hand) {
-        text += i.getCard() + ", ";
-    };
-    if (cards_left) {
-        text = text.substr(0, text.size() - 2) + "\n";
-    };
-    return text;
 };
 
 string Hand::displayHand() {

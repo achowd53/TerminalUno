@@ -23,26 +23,26 @@ class Player {
             hand = Hand(name);
             player_type = 0;
         };
-        friend ostream& operator<<(ostream& stream, const Player& player);
-        void resetPlayer();
-        void drawCards(int n);
-        void drawCard();
-        int cardsLeft();
-        int getPlayerType();
-        string getPlayerName();
-        string getHandString();
+        friend ostream& operator<<(ostream& stream, const Player& player); //Output player_name to stream
+        void resetPlayer(); //Reset Hand of Player
+        void drawCards(int n); //Add n cards from deck to hand
+        void drawCard(); //Add 1 card from deck to hand
+        int cardsLeft(); //Return hand.numCards()
+        int getPlayerType(); //Return type of player, 1 is CPU, 0 is Player
+        string getPlayerName(); //Return player_name as string
+        string displayHand(); //Return contents of hand as string
         bool placeRandomCard(); //true if card succesfully places
-        void placeCard(Card* place);
-        void placeCard(int n);
-        void placeCard(string str);
-        bool validatePlay(Card* card, Card top_card);
-        bool validatePlay(int n, Card top_card);
-        bool validatePlay(string str, Card top_card);
-        string highestColor();
-        Card* getCardFromString(string str);
-        Card* getCardFromInteger(int n);
-        Hand getHand();
-        void setNewHand(Hand* new_hand);
+        void placeCard(Card* place); //Place Card place to card_pool (Place: Remove from hand, then add to card_pool)
+        void placeCard(int n); //Get Card in hand at index n and place in card_pool
+        void placeCard(string str); //Get Card in hand with card_name str and place in card_pool
+        bool validatePlay(Card* card, Card top_card); //Check whether card placement option is valid
+        bool validatePlay(int n, Card top_card); //Check whether card placement option is valid
+        bool validatePlay(string str, Card top_card); //Check whether card placement option is valid
+        string highestColor(); //Return hand.highestColor()
+        Card* getCardFromString(string str); //Return hand.findCardByName(str)
+        Card* getCardFromInteger(int n); //Return hand.at(n)
+        Hand getHand(); //Return hand
+        void setNewHand(Hand* new_hand); //Set hand to be new_hand
     private:
         Hand hand;
         Deck* deck;
@@ -85,8 +85,8 @@ string Player::getPlayerName() {
     return player_name;
 };
 
-string Player::getHandString() {
-    return hand.getHandString();
+string Player::displayHand() {
+    return hand.displayHand();
 };
 
 bool Player::placeRandomCard() {

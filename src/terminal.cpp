@@ -16,27 +16,27 @@ class Terminal {
             initGame();
         };
         int checkWin(); //Return 0 if no one's won yet or return index of player that has won
-        Player getPlayer(int n);
-        void playerTurn();
+        Player getPlayer(int n); //Retrieve player object at index n from players vector
+        void playerTurn(); //Main turn logic for player turn
     private:
-        void initGame();
-        void createPlayers();   
-        void incrementTurn();
-        void checkDeck(); //restack deck if cards are getting low
-        bool wildColorValid(string color);
-        void specialCardRules(int num_actions);
-        string color(string str);
+        void initGame(); //User input to set up number of players and game rule options
+        void createPlayers(); //Initializes player and cpu objects
+        void incrementTurn(); //Goes to following player's turn
+        void checkDeck(); //Restack deck if cards are getting low
+        bool wildColorValid(string color); //Checks if user entered a valid option for Wild Card/+4 Color
+        void specialCardRules(int num_actions); //Applies special card rules and custom game rules, taking input of number of normal actions (placing cards, drawing cards) done
+        string color(string str); //Applies terminal coloring for corresponding player if applicable
         int stacked_draws_num = 0;
         int stacked_draws_type = -1; //0 is +2s and 1 is +4s
         int num_players;
         int turn;
         bool skip_turn = false;
         bool reversed_order = false;
-        //Custom Settings
+        bool use_color = false;
+        //Custom Rules
         bool stacking = false;
         bool seven_swap = false;
         bool zero_rotate = false;
-        bool use_color = false;
 };
 
 int Terminal::checkWin() { //Return -1 if no one's won yet or return index of player that has won
@@ -142,14 +142,14 @@ void Terminal::playerTurn() {
     //Print out what the top card is
     Card top_card = *(pool.getTopCard());
     cout << color("Top Card: " + top_card.getCardString() + "\n\n");
-    //If self player, print out hand and ask to select card
     Card placed_card;
     bool uno_called = false;
-    int actions_made = 0;
+    int actions_made = 0; //Number of actions (drawing cards, placing cards) done by player
+    //If self player, print out hand and ask to select valid option
     if ((*current_player).getPlayerType() == 0) {
         bool valid_play = false;
         while (!valid_play) {
-            cout << color("Your Current Hand: " + (*current_player).getHandString()) << endl;
+            cout << color("Your Current Hand: " + (*current_player).displayHand()) << endl;
             string card;
             cout << color("Input a Move (or enter 'help' to get a list of possible moves):\n");
             while (getline(cin, card) && card.length() == 0){};
@@ -196,7 +196,7 @@ void Terminal::playerTurn() {
             if (Card::stringsEqual(card, "quit")) {
                 exit(0);
             };
-            try {
+            try { //Player entered index of card in hand
                 int x = stoi(card);
                 if ((*current_player).validatePlay(x, top_card)) {
                     //If valid play, placeCard
@@ -211,7 +211,7 @@ void Terminal::playerTurn() {
                     continue;
                 };
             }
-            catch (invalid_argument e) {
+            catch (invalid_argument e) { //Player entered name of card in hand
                 if ((*current_player).validatePlay(card, top_card)) {
                     //If valid play, placeCard
                     (*current_player).placeCard(card);
@@ -241,7 +241,6 @@ void Terminal::playerTurn() {
         placed_card = *(pool.getTopCard());
     };
     cout << color((*current_player).getPlayerName() + " has placed a " + placed_card.getCardString()) << endl;
-    //Special function for placed card depending on card
     specialCardRules(actions_made);
     //Check if player has called UNO or failed to call it
     if ((*current_player).getPlayerType() == 0) {
@@ -291,15 +290,15 @@ void Terminal::specialCardRules(int num_actions) {
             stacked_draws_type = -1;
         };
     };
-    if (Card::stringsEqual(top_card.getNumber(), "+2")) {
+    if (Card::stringsEqual(top_card.getNumber(), "+2")) { //+2 Stacked
         stacked_draws_num += 2;
         stacked_draws_type = 0;
     };
-    if (Card::stringsEqual(top_card.getNumber(), "+4")) {
+    if (Card::stringsEqual(top_card.getNumber(), "+4")) { //+4 Stacked
         stacked_draws_num += 4;
         stacked_draws_type = 1;
     };
-    if (seven_swap && Card::stringsEqual(top_card.getNumber(), "7")) {
+    if (seven_swap && Card::stringsEqual(top_card.getNumber(), "7")) { //Custom Game Rule for 7
         int swap_with = 0;
         if ((*player).getPlayerType() == 0) {
             string text = "List of Players\n";
@@ -332,7 +331,7 @@ void Terminal::specialCardRules(int num_actions) {
         players[swap_with].setNewHand(&hands[0]);
         cout << color(players[turn].getPlayerName() + " has chosen to swap hands with " + players[swap_with].getPlayerName() + "\n");
     };
-    if (zero_rotate && Card::stringsEqual(top_card.getNumber(), "0")) {
+    if (zero_rotate && Card::stringsEqual(top_card.getNumber(), "0")) { //Custom Game Rule for 0
         vector<Hand> hands;
         for (int i = 0; i < num_players; i++) {
             hands.push_back(players[i].getHand());
@@ -352,14 +351,14 @@ void Terminal::specialCardRules(int num_actions) {
         };
         cout << color("Hands have been rotated.\n");
     };
-    if (Card::stringsEqual(top_card.getNumber(), "Skip")) {
+    if (Card::stringsEqual(top_card.getNumber(), "Skip")) { //Skip placed
         skip_turn = true;
     };
-    if (Card::stringsEqual(top_card.getNumber(), "Reverse")) {
+    if (Card::stringsEqual(top_card.getNumber(), "Reverse")) { //Reverse placed
         reversed_order = !reversed_order;
     };
-    if (Card::stringsEqual(top_card.getColor(), "Wild")) {
-        if ((*player).getPlayerType() == 0) {
+    if (Card::stringsEqual(top_card.getColor(), "Wild")) { //Wild placed
+        if ((*player).getPlayerType() == 0) { //Select valid wild color if player
             string col = "";
             cout << color("Choose Color (Red, Yellow, Blue, Green): ");
             getline(cin, col);
@@ -370,7 +369,7 @@ void Terminal::specialCardRules(int num_actions) {
             cout << color((*player).getPlayerName() + " has selected the color " + col) << endl;
             (*(pool.getTopCard())).setWildColor(col);
         }
-        else {
+        else { // If CPU select color they have the most of
             string col = (*player).highestColor();
             cout << color((*player).getPlayerName() + " has selected the color " + col + "\n");
             (*(pool.getTopCard())).setWildColor(col);
@@ -401,10 +400,10 @@ string Terminal::color(string str) {
 };
 
 int main() {
-    Terminal game = Terminal();
-    while (game.checkWin() == -1) {
+    Terminal game = Terminal(); //Initialize Game
+    while (game.checkWin() == -1) { //If no one has won the game yet, move on to the next player's turn
         game.playerTurn();
     };
-    cout << game.getPlayer(game.checkWin());
+    cout << game.getPlayer(game.checkWin()) << " has won the game, congratulations!";
     return -1;  
 };

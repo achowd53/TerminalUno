@@ -16,11 +16,11 @@ class Deck { //Back of deck is the top card
             resetDeck();
         };
         friend ostream& operator<<(ostream& stream, const Deck& d);
-        void resetDeck();
-        void shuffleDeck();
-        vector<Card> drawCards(int num_draws);
-        Card drawCard();
-        Card startingCard();
+        void resetDeck(); //Reset deck to initial UNO deck cards
+        void shuffleDeck(); //Shuffle order of Cards in deck
+        vector<Card> drawCards(int num_draws); //Pop and return num_draws number of cards from top of deck as a vector of Cards
+        Card drawCard(); //Pop and return top card of deck
+        Card startingCard(); //Shuffle Deck until top card card_color is not Wild, then pop and return top card
         vector<Card> deck;
         int num_cards;
 };

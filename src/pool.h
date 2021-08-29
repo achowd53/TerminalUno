@@ -3,19 +3,18 @@
 
 #include "deck.h"
 
-class CardPool { //Top of Pile is at back
+class CardPool { //Top of Pile is at end of played_cards
     public:
         friend ostream& operator<<(ostream& stream, const CardPool& pool);
         CardPool(Deck* d) {
             deck = d;
             played_cards = {(*d).startingCard()};
         };
-        Card* getTopCard();
-        vector<Card> getTopCards(); //Returns Top 2 Cards (in order of top card, second from top)
-        void addCard(Card* card);
-        void emptyCards();
-        void resetPool();
-        void applyWildColor(string color);
+        Card* getTopCard(); //Get last card in played_cards
+        vector<Card> getTopCards(); //Returns last played 2 Cards (in order of last card played, second from last) in played_cards
+        void addCard(Card* card); //Add card to played_cards
+        void emptyCards(); //Shuffle all played_cards other than last 2 into deck
+        void resetPool(); //Clear played_cards
     private:
         vector<Card> played_cards;
         Deck* deck;
@@ -48,10 +47,6 @@ void CardPool::emptyCards() {
 
 void CardPool::resetPool() {
     played_cards.clear();
-};
-
-void CardPool::applyWildColor(string color) {
-    played_cards.back().setWildColor(color);
 };
 
 #endif

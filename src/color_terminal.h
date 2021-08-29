@@ -12,15 +12,16 @@ class Color { //Terminal Coloring implemented with ANSI codes
         };
         string colorTerminal(string color_this, int color_index, bool use_color);
     private:
-        void initColors();
+        void initColors(); //Initialize terminal coloring options
         vector<string> escape_colors;
         string reset_color = "\033[0m";
 };
 
 string Color::colorTerminal(string color_this, int color_index, bool use_color) {
-    if (!use_color) {
+    if (!use_color) { //If not using color, return as normal
         return color_this; 
     }
+    //Otherwise add ANSI code to front and back to color terminal text
     return escape_colors[color_index] + color_this + reset_color;
 };
 
